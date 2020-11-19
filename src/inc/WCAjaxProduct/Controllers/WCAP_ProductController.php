@@ -11,7 +11,13 @@ class WCAP_ProductController
 		$product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : null;
 
 		if ($product_id) {
-			$markup = do_shortcode(sprintf('[product_page id="%s"]', $product_id));
+			$markup = get_transient(sprintf('product_%s', $product_id));
+
+			if(!$markup) {
+				$markup = do_shortcode(sprintf('[product_page id="%s"]', $product_id));
+				set_transient(sprintf('product_%s', $product_id), $markup);
+			}
+
 			wp_send_json_success(array('markup' => $markup));
 		}
 
