@@ -9,13 +9,15 @@ class WCAP_ProductController
 	public static function get_product()
 	{
 		$product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : null;
+		// 24 часа
+		$expiration = 86400;
 
 		if ($product_id) {
 			$markup = get_transient(sprintf('product_%s', $product_id));
 
 			if(!$markup) {
 				$markup = do_shortcode(sprintf('[product_page id="%s"]', $product_id));
-				set_transient(sprintf('product_%s', $product_id), $markup);
+				set_transient(sprintf('product_%s', $product_id), $markup, $expiration);
 			}
 
 			wp_send_json_success(array('markup' => $markup));
